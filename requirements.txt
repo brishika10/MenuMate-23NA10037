@@ -2,3 +2,5 @@
 openai>=1.40
 pydantic>=2.6
 python-dotenv>=1.0
+# Optional demo UI only (streamlit run streamlit_app.py); run.py does not need it.
+streamlit>=1.40

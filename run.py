@@ -9,13 +9,16 @@ Each output line must validate against schema.Output.
 """
 import argparse
 import json
+import os
 import time
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-from schema import Output
+from schema import Output, Profile, RuleTrace
+from src.detect import detect_escalation
 from src.pipeline import respond
+from src.policy import ESCALATION_TEXT
 
 load_dotenv()
 
@@ -36,9 +39,17 @@ def main() -> None:
             message = conv["turns"][-1]["text"]
             start = time.perf_counter()
 
-            # TODO: if respond() raises, this loop stops and every later conversation scores zero.
-            # Handling failures per conversation is part of the assignment.
-            result: Output = respond(conv["conversation_id"], history, message)
+            # Failures are contained per conversation: a crash yields a safe, recommendation-free output.
+            try:
+                result: Output = respond(conv["conversation_id"], history, message)
+            except Exception as e:  # noqa: BLE001
+                escalate = bool(detect_escalation(message))  # P-01 still holds on the error path
+                result = Output(conversation_id=conv["conversation_id"], route="escalate" if escalate else "recommend",
+                                profile=Profile(escalation=escalate), recommendations=[],
+                                reply=ESCALATION_TEXT["en"] if escalate else
+                                "Sorry, something went wrong on our side. Could you send that again?",
+                                rule_trace=[RuleTrace(rule_id="ERROR", outcome="pass", detail=str(e)[:200])],
+                                model=os.environ.get("LLM_MODEL", ""))
 
             result.latency_ms = int((time.perf_counter() - start) * 1000)
             out.write(result.model_dump_json() + "\n")

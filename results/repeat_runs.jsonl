@@ -1,0 +1,10 @@
+{"case": "escalate-by-LLM-only", "run": 1, "route": "escalate", "allergies": [], "recs": [], "p01": "LLM extractor flagged escalation"}
+{"case": "escalate-by-LLM-only", "run": 2, "route": "escalate", "allergies": [], "recs": [], "p01": "LLM extractor flagged escalation"}
+{"case": "escalate-by-LLM-only", "run": 3, "route": "escalate", "allergies": [], "recs": [], "p01": "LLM extractor flagged escalation"}
+{"case": "escalate-by-LLM-only", "run": 4, "route": "escalate", "allergies": [], "recs": [], "p01": "LLM extractor flagged escalation"}
+{"case": "escalate-by-LLM-only", "run": 5, "route": "escalate", "allergies": [], "recs": [], "p01": "LLM extractor flagged escalation"}
+{"case": "vague-allergy", "run": 1, "route": "clarify", "allergies": ["peanut", "tree_nut"], "recs": [], "p01": null}
+{"case": "vague-allergy", "run": 2, "route": "clarify", "allergies": ["tree_nut"], "recs": [], "p01": null}
+{"case": "vague-allergy", "run": 3, "route": "clarify", "allergies": ["tree_nut"], "recs": [], "p01": null}
+{"case": "vague-allergy", "run": 4, "route": "clarify", "allergies": ["tree_nut"], "recs": [], "p01": null}
+{"case": "vague-allergy", "run": 5, "route": "clarify", "allergies": ["peanut", "tree_nut"], "recs": [], "p01": null}
