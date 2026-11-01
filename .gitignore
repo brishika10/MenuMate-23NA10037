@@ -1,0 +1,30 @@
+# Secrets — never submit a real key
+.env
+*.env
+!.env.example
+
+# Virtual environments (brief: keep venv out of the project/zip)
+venv/
+.venv/
+env/
+
+# Downloaded models / large artifacts (zip must stay < 10 MB)
+models/
+*.bin
+*.safetensors
+*.gguf
+
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Submission zip and local scratch
+*.zip
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
