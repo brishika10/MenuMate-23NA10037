@@ -17,7 +17,7 @@ def client() -> OpenAI:
     global _client
     if _client is None:
         _client = OpenAI(api_key=os.environ.get("LLM_API_KEY"), base_url=os.environ.get("LLM_BASE_URL") or None,
-                         timeout=15.0, max_retries=0)
+                         timeout=6.0, max_retries=0)
     return _client
 
 
@@ -46,5 +46,6 @@ def chat_json(messages: list[dict], usage: Usage, temperature: float = 0.0, max_
             raise RuntimeError(f"LLM call failed (not retryable): {e}") from e
         except Exception as e:  # rate limit, timeout, 5xx
             last = e
-            time.sleep(min(8, 2 ** attempt) + random.random() * 0.3)
+            if attempt < 2:  # no pointless wait after the last attempt
+                time.sleep(0.5 * 2 ** attempt + random.random() * 0.3)  # 0.5 s, then 1 s
     raise RuntimeError(f"LLM call failed: {last}")

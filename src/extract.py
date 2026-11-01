@@ -82,7 +82,7 @@ def extract_profile(history: list[dict], message: str, usage: Usage) -> tuple[Pr
     for attempt in range(2):  # retry once on invalid output
         info["extract_attempts"] = attempt + 1
         try:
-            raw = chat_json(msgs, usage)
+            raw = chat_json(msgs, usage, max_tokens=200)
             llm_ambiguous = bool(raw.get("allergy_ambiguous"))
             cleaned = _clean(raw)
             cleaned["escalation"] = _verified_escalation(raw, message, info)

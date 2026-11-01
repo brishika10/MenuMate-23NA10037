@@ -10,10 +10,14 @@
    course words and a diet bonus. "Thai-ish and spicy" (c-002) gets Penne Arrabbiata because the only Thai dish is
    excluded and nothing models cuisine similarity. Also, "fits budget and party size together" only checks the budget
    sum; it does not check that total servings cover the party. Not fixed: safety and grounding were the priority in
-   3 hours, and an LLM rerank of the filtered set would add a third call and push p95 further past 4 s.
+   3 hours, and an LLM rerank of the filtered set would add a third call and push p95 (3808 ms on the public set, already close to 4 s) over the target.
 
 Also unsure: the LLM still invents an allergen on clarify turns (see EVAL repeated runs), and the Hinglish detector
 is a word list (≥2 hits) — short Hinglish messages like "kuch meetha" could come out `en`.
+Latency is borderline, not solved: public p95 3808 ms but adversarial p95 4281 ms, from single runs with ±~400 ms API
+variance. To get there I capped replies at 60 words, below the brief's "about 80" — a quality-for-speed trade-off.
+Rate limits: backoff is now short (0.5 s, 1 s) and does not read the provider's `Retry-After`, so on a low-RPM free
+tier (e.g. Groq) a conversation can fall back to the code-only path; untested, since I only ran on OpenAI.
 
 ## 2. Policy vs my judgement
 From policy.md: order of checks; escalation categories and both fixed texts (parsed from the file); P-02 trigger;
@@ -39,6 +43,9 @@ Corrected/rejected AI output:
   "no X" fallback produced `avoid_ingredients=["allergi"]` — caught on the first run, fixed with a "fine/ok" check.
 - A frontend research sub-agent proposed 0–3 chilli icons (menu uses 0–4) and a "Nut-free" suggestion chip, which
   would violate the policy's "never promise nut-free" — rejected.
+- A latency-analysis sub-agent suggested telling the reply LLM not to repeat the reasons in the reply text. After
+  applying it, replies became "Here are some options…" without naming any dish, which breaks the brief (the reply
+  must give each dish with a reason). Reverted that instruction and kept only the word limits (DECISIONS 15:10).
 - A "relevance gate" that dropped zero-relevance picks was written and then removed: it reduced variety for no
   safety gain. A diet bonus I added boosted the injected DS-047 brownie for an egg customer; restricted it to
   main/starter/rice.
